@@ -31,15 +31,11 @@ def task_1():
 
     missing_counts = df_bellevue.isna().sum()
 
-    sorted_cols = (
-        missing_counts
-        .to_frame(name='missing')
-        .reset_index()
-        .rename(columns={'index': 'column'})
-        .sort_values(by=['missing', 'column'])
-    )
+    # stable sort preserves original column order for ties
+    missing_counts = missing_counts.sort_values(kind='mergesort')
 
-    return list(sorted_cols['column'])
+    return list(missing_counts.index)
+
 
 def task_2():
     df = df_bellevue.copy()
