@@ -27,14 +27,13 @@ url = 'https://github.com/melaniewalsh/Intro-Cultural-Analytics/raw/master/book/
 df_bellevue = pd.read_csv(url)
 
 def task_1():
-    df_bellevue['gender'] = df_bellevue['gender'].str.strip().str.lower()
-
     missing_counts = df_bellevue.isna().sum()
 
-    # stable sort preserves original column order for ties
+    # stable sort keeps original column order for ties
     missing_counts = missing_counts.sort_values(kind='mergesort')
 
     return list(missing_counts.index)
+
 
 
 def task_2():
