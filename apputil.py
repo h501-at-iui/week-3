@@ -2,4 +2,65 @@ import seaborn as sns
 import pandas as pd
 
 
-# update/add code below ...
+# Excercise 1
+def fibonacci(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+# Exercise 2
+def to_binary(n):
+    if n < 2:              # base case (stopping point)
+        return str(n)
+    else:
+        return to_binary(n // 2) + str(n % 2)
+
+
+# Ecercise 3
+import pandas as pd
+
+url = 'https://github.com/melaniewalsh/Intro-Cultural-Analytics/raw/master/book/data/bellevue_almshouse_modified.csv'
+df_bellevue = pd.read_csv(url)
+
+def task_1():
+    return [
+        'date_in',
+        'last_name',
+        'first_name',
+        'gender',
+        'age',
+        'profession',
+        'disease',
+        'children'
+    ]
+
+def task_2():
+    df = df_bellevue.copy()
+
+    df['date_in'] = pd.to_datetime(df['date_in'], errors='coerce')
+    df['year'] = df['date_in'].dt.year
+
+    admissions_per_year = (
+        df
+        .groupby('year')
+        .size()
+        .reset_index(name='total_admissions')
+    )
+
+    return admissions_per_year
+
+def task_3():
+    # clean gender column just in case
+    df_bellevue['gender'] = df_bellevue['gender'].str.strip().str.lower()
+
+    avg_age = df_bellevue.groupby('gender')['age'].mean()
+    return avg_age
+
+def task_4():
+    common_jobs = df_bellevue['profession'].value_counts().head(5)
+    return list(common_jobs.index)
+
