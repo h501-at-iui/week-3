@@ -27,18 +27,33 @@ url = 'https://github.com/melaniewalsh/Intro-Cultural-Analytics/raw/master/book/
 df_bellevue = pd.read_csv(url)
 
 def task_1():
-    # fix messy gender column
     df_bellevue['gender'] = df_bellevue['gender'].str.strip().str.lower()
-    print("Cleaned gender column (removed spaces and standardized text).")
 
-    # count missing values and sort
-    missing_counts = df_bellevue.isna().sum().sort_values()
+    missing_counts = df_bellevue.isna().sum()
 
-    # return sorted column names
-    return list(missing_counts.index)
+    sorted_cols = (
+        missing_counts
+        .to_frame(name='missing')
+        .reset_index()
+        .rename(columns={'index': 'column'})
+        .sort_values(by=['missing', 'column'])
+    )
+
+    return list(sorted_cols['column'])
 
 def task_2():
-    admissions_per_year = df_bellevue.groupby('year').size().reset_index(name='total_admissions')
+    df = df_bellevue.copy()
+
+    df['date_in'] = pd.to_datetime(df['date_in'], errors='coerce')
+    df['year'] = df['date_in'].dt.year
+
+    admissions_per_year = (
+        df
+        .groupby('year')
+        .size()
+        .reset_index(name='total_admissions')
+    )
+
     return admissions_per_year
 
 def task_3():
